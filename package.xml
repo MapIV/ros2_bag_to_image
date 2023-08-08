@@ -12,6 +12,7 @@
 
   <depend>rclcpp</depend>
   <depend>rclcpp_components</depend>
+  <depend>rosbag2_cpp</depend>
   <depend>sensor_msgs</depend>
   <depend>libopencv-dev</depend>
   <depend>boost</depend>

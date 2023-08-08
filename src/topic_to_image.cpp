@@ -29,7 +29,7 @@
 #include "topic_to_image/topic_to_image.hpp"
 
 TopicToImage::TopicToImage(const rclcpp::NodeOptions & options) :
-  Node("bag_to_image", options)//,  image_transport_(this)
+  Node("topic_to_image", options)
 {
   // IO
   input_topic_ = this->declare_parameter<std::string>("input/topic", "/image_raw");

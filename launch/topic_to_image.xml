@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <launch>
     <arg name="input/topic" default="/points_raw" description="Input Image Topic"/>
-    <arg name="output/path" default="/tmp/" description="Output path PCD files"/>
-    <arg name="output/prefix" default="image" description="Output path PCD files"/>
+    <arg name="output/path" default="/tmp/" description="Output path PNG files"/>
+    <arg name="output/prefix" default="image" description="Output path PNG files"/>
     <arg name="compressed" default="True" description="Use Compressed Image Transport"/>
 
     <node pkg="ros2_bag_to_image" exec="topic_to_image_node" name="topic_to_image_node" output="screen">

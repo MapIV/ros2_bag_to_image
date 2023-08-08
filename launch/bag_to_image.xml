@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="input/path" description="Input Rosbag Path"/>
+    <arg name="input/bag_format" default="cdr" description="Rosbag format"/>
+    <arg name="input/bag_storage_id" default="sqlite3" description="Rosbag storage_id"/>
+    <arg name="input/topics" description="List of Input Topics"/>
+    <arg name="output/path" default="/tmp/" description="Output path PNG files"/>
+
+    <node pkg="ros2_bag_to_image" exec="bag_to_image_node" name="bag_to_image_node" output="screen">
+        <param name="input/path" value="$(var input/path)"/>
+        <param name="input/bag_format" value="$(var input/bag_format)"/>
+        <param name="input/bag_storage_id" value="$(var input/bag_storage_id)"/>
+        <param name="input/topics" value="$(var input/topics)"/>
+        <param name="output/path" value="$(var output/path)"/>
+    </node>
+</launch>
