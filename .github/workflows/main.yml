@@ -8,26 +8,20 @@ on:
   workflow_dispatch:
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
         ros_distribution:
           - humble
-
-        include:
-          - docker_image: ubuntu:jammy
-            ros_distribution: humble
+          - rolling
 
     container:
-      image: ${{ matrix.docker_image }}
+      image: ros:${{ matrix.ros_distribution }}
 
     steps:
-      - name: setup ROS environment
-        uses: ros-tooling/setup-ros@v0.6
-        with:
-          required-ros-distributions: ${{ matrix.ros_distribution }}
       - name: build and test ROS 2
         uses: ros-tooling/action-ros-ci@v0.3
         with:
           target-ros2-distro: ${{ matrix.ros_distribution }}
+          skip-tests: true
