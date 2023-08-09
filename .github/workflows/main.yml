@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - ros2
+      - master
   workflow_dispatch:
 jobs:
   build-and-test:
