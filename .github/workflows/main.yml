@@ -13,12 +13,9 @@ jobs:
       fail-fast: false
       matrix:
         ros_distribution:
-          - galactic
           - humble
 
         include:
-          - docker_image: ubuntu:focal
-            ros_distribution: galactic
           - docker_image: ubuntu:jammy
             ros_distribution: humble
 
@@ -27,10 +24,10 @@ jobs:
 
     steps:
       - name: setup ROS environment
-        uses: ros-tooling/setup-ros@v0.4
+        uses: ros-tooling/setup-ros@v0.6
         with:
           required-ros-distributions: ${{ matrix.ros_distribution }}
       - name: build and test ROS 2
-        uses: ros-tooling/action-ros-ci@v0.2
+        uses: ros-tooling/action-ros-ci@v0.3
         with:
           target-ros2-distro: ${{ matrix.ros_distribution }}
