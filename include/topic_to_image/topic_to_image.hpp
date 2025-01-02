@@ -33,7 +33,11 @@
 #include <filesystem>
 #include <opencv2/opencv.hpp>
 #include "rclcpp/rclcpp.hpp"
+#if __has_include("cv_bridge/cv_bridge.hpp") // ROS 2 jazzy and newer
+#include "cv_bridge/cv_bridge.hpp"
+#else // ROS 2 humble
 #include "cv_bridge/cv_bridge.h"
+#endif
 #include "image_transport/image_transport.hpp"
 #include "boost/lexical_cast.hpp"
 

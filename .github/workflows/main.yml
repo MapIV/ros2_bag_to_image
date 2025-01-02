@@ -8,17 +8,16 @@ on:
   workflow_dispatch:
 jobs:
   build-and-test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         ros_distribution:
           - humble
+          - jazzy
           - rolling
-
     container:
       image: ros:${{ matrix.ros_distribution }}
-
     steps:
       - name: build and test ROS 2
         uses: ros-tooling/action-ros-ci@v0.3
