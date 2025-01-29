@@ -27,6 +27,7 @@
  */
 
 #include "bag_to_image/bag_to_image.hpp"
+#include <boost/format.hpp>
 
 BagToImage::BagToImage(const rclcpp::NodeOptions &options) :
   Node("bag_to_image", options) {
@@ -92,15 +93,16 @@ void BagToImage::ReadBag() {
           << " at " << bag_message->time_stamp);
         continue;
       }
-      std::string fname;
       std::string target_topic_name = bag_message->topic_name;
       if (target_topic_name.substr(0, 1) == "/") {
         target_topic_name = target_topic_name.substr(1);
       }
       target_topic_name = std::regex_replace(target_topic_name, std::regex("/"), "_");
-      fname = output_path_ + "/" + target_topic_name + "_" +
-              boost::lexical_cast<std::string>(image_msg->header.stamp.sec) + "." +
-              boost::lexical_cast<std::string>(image_msg->header.stamp.nanosec) + ".png";
+      const std::string fname = (boost::format("%s/%s/%09d.%09d.png") %
+              output_path_ %
+              target_topic_name %
+              image_msg->header.stamp.sec %
+              image_msg->header.stamp.nanosec).str();
 
       cv::imwrite(fname, image_msg->image);
       RCLCPP_INFO_STREAM(get_logger(), "Image saved to: " << fname);
