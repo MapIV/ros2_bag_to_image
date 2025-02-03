@@ -28,6 +28,8 @@
 
 #include "bag_to_image/bag_to_image.hpp"
 
+#include <sensor_msgs/image_encodings.hpp>
+
 BagToImage::BagToImage(const rclcpp::NodeOptions &options) :
   Node("bag_to_image", options) {
   // IO
@@ -119,8 +121,16 @@ cv_bridge::CvImagePtr BagToImage::MessageToImage(std::shared_ptr<rosbag2_storage
     rclcpp::Serialization<sensor_msgs::msg::Image> serialization;
     rclcpp::SerializedMessage extracted_serialized_msg(*bag_message->serialized_data);
     serialization.deserialize_message(&extracted_serialized_msg, &extracted_msg);
+    auto output_encoding = sensor_msgs::image_encodings::BGR8;
+    if (sensor_msgs::image_encodings::numChannels(extracted_msg.encoding) == 1) {
+      if (sensor_msgs::image_encodings::bitDepth(extracted_msg.encoding) == 8) {
+        output_encoding = sensor_msgs::image_encodings::TYPE_8UC1;
+      } else {
+        output_encoding = sensor_msgs::image_encodings::TYPE_16UC1;
+      }
+    }
     try {
-      in_image_ptr = cv_bridge::toCvCopy(extracted_msg, sensor_msgs::image_encodings::BGR8);
+      in_image_ptr = cv_bridge::toCvCopy(extracted_msg, output_encoding);
     } catch (cv_bridge::Exception &e) {
       RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", e.what());
     }
@@ -132,8 +142,12 @@ cv_bridge::CvImagePtr BagToImage::MessageToImage(std::shared_ptr<rosbag2_storage
     serialization.deserialize_message(&extracted_serialized_msg, &extracted_msg);
     try {
       in_image_ptr = cv_bridge::toCvCopy(extracted_msg, sensor_msgs::image_encodings::BGR8);
-    } catch (cv_bridge::Exception &e) {
-      RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", e.what());
+    } catch (cv_bridge::Exception &e_color) {
+      try {
+        in_image_ptr = cv_bridge::toCvCopy(extracted_msg, sensor_msgs::image_encodings::MONO8);
+      } catch (cv_bridge::Exception &e_mono) {
+        RCLCPP_ERROR(this->get_logger(), "cv_bridge exceptions (color attempt then mono): %s then %s", e_color.what(), e_mono.what());
+      }
     }
   }
   return in_image_ptr;
