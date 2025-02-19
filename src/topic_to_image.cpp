@@ -72,9 +72,17 @@ void TopicToImage::ImageCallback(const sensor_msgs::msg::Image::ConstSharedPtr &
       boost::lexical_cast<std::string>(image_msg->header.stamp.sec) + "."+
           boost::lexical_cast<std::string>(image_msg->header.stamp.nanosec) + ".png";
 
+  auto output_encoding = sensor_msgs::image_encodings::BGR8;
+  if (sensor_msgs::image_encodings::numChannels(image_msg->encoding) == 1) {
+    if (sensor_msgs::image_encodings::bitDepth(image_msg->encoding) == 8) {
+      output_encoding = sensor_msgs::image_encodings::TYPE_8UC1;
+    } else {
+      output_encoding = sensor_msgs::image_encodings::TYPE_16UC1;
+    }
+  }
   cv_bridge::CvImagePtr in_image_ptr;
   try {
-    in_image_ptr = cv_bridge::toCvCopy(image_msg, sensor_msgs::image_encodings::BGR8);
+    in_image_ptr = cv_bridge::toCvCopy(image_msg, output_encoding);
   } catch (cv_bridge::Exception & e) {
     RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", e.what());
     return;
