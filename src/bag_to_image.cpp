@@ -89,7 +89,11 @@ void BagToImage::ReadBag() {
       if (image_msg == nullptr) {
         RCLCPP_INFO_STREAM(get_logger(), "Could not convert the message to Image type: "
           << bag_message->topic_name
-          << " at " << bag_message->time_stamp);
+#if __has_include("cv_bridge/cv_bridge.hpp") // ROS 2 jazzy and newer
+          << " at " << bag_message->send_timestamp);
+#else // ROS 2 humble
+          << " at " << bag_message->timestamp);
+#endif
         continue;
       }
       std::string fname;
