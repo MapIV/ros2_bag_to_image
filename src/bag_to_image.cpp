@@ -95,7 +95,7 @@ void BagToImage::ReadBag() {
 #if __has_include("cv_bridge/cv_bridge.hpp") // ROS 2 jazzy and newer
           << " at " << bag_message->send_timestamp);
 #else // ROS 2 humble
-          << " at " << bag_message->timestamp);
+          << " at " << bag_message->time_stamp);
 #endif
         continue;
       }
